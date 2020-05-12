@@ -1,10 +1,11 @@
 from .exceptions import AssetNotFoundException, InvalidAssetTypeException
+from .dataclasses import World
 
 from time import sleep 
 from json import load
 from os.path import join as pjoin   # I like to do this so it doesn't conflict with normal join.
 from os.path import isdir
-from os import mkdir
+from os import mkdir, listdir
 
 class Data(object):
     """
@@ -44,8 +45,6 @@ class Data(object):
             pass        
         elif asset_type == "item":
             pass
-        elif asset_type == "save":
-            pass
         else:
             raise InvalidAssetTypeException(asset_id)
         
@@ -53,3 +52,22 @@ class Data(object):
             raise AssetNotFoundException(asset_id)
 
         self.cache[asset_id] = asset
+
+    def save(self, world):
+        # Save the world to disk
+        target = pjoin(self.saves_dir, world.name)
+        if not isdir(target):
+            mkdir(target)
+        # Put actual world to disk here.
+        # Add a header of sorts with hashes for files so you don't have to write everything always.
+
+    def get_saves(self):
+        # Return list of savefiles
+        return listdir(self.saves_dir)
+    
+    def load_save(self, world):
+        target = pjoin(self.saves_dir, world)
+        assert isdir(target)
+        # TODO FIXME PLEASE OH LORD FUCK
+        # For MVP, instead of actually loading a world, create a new one.
+        return World(world)

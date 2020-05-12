@@ -1,4 +1,3 @@
-
 class InvalidAssetTypeException(Exception):
     """
     For when the cache handler tries to load something but the type presented doesn't exist.

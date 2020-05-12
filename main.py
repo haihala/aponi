@@ -9,7 +9,11 @@ def main():
     try:
         instance.run()
     except KeyboardInterrupt:
-        instance.stop()
+        try:
+            instance.save()
+        except KeyboardInterrupt:
+            # Player interrupted again while saving game state.
+            pass
 
 if __name__=="__main__":
     main()
