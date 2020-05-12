@@ -1,4 +1,4 @@
-INTRO = "Hello."
+INTRO = "Hello. Welcome to Aponi tech demo #0. This is the help message:"
 
 WORLDS_HEADER = "The following saves found:"
 WORLD_LINE = "\t* {}"
@@ -19,4 +19,5 @@ COMMAND_HELP_DATA = {
     "no": "Used by itself. Decline whatever is being prompted.",
     "new": "Used by itself. Create a new world. The world name will be prompted.",
     "load": "Takes world name as argument. Example usage: 'load middle-earth'.",
+    "setting": "Re-describe the current setting",
 }

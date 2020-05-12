@@ -34,3 +34,5 @@ class World:
         # Travel costs more one way because uphill.
         self.distances = {("Kliron", "Brine"): 4, ("Brine", "Kliron"): 2}
 
+        self.setting = "You find yourselves in a sprawling city."
+

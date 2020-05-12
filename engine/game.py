@@ -14,7 +14,7 @@ class Game(object):
     def __init__(self, root_dir):
         self.data = Data(root_dir)
         self.world = None
-        self.evergreen = {"duck": self.duck, "help": self.show_help, "quit": self.quit}
+        self.evergreen = {"duck": self.duck, "help": self.show_help, "quit": self.quit, "setting": self.setting}
         self.set_context()
 
         self.running = False
@@ -105,10 +105,17 @@ class Game(object):
     def quit(self):
         self.save()
         self.running = False
+        return "Game saved, quitting"
 
     def save(self): 
         # save game
         self.data.save(self.world) 
+        return "Game saved"
+
+    def setting(self):
+        if self.world:
+            return self.world.setting
+        return "Game not loaded, setting only applicable after a world is loaded."
 
     # Contextual
     def new(self):
@@ -120,3 +127,4 @@ class Game(object):
     def get_world(self, name):
         self.world = self.data.load_save(name)
         self.set_context(self.world.situation)
+        return self.setting()

@@ -14,6 +14,7 @@ class Data(object):
     def __init__(self, root_dir):
         self.asset_dir = pjoin(root_dir, "assets")
         self.saves_dir = pjoin(root_dir, "saves")
+        self.index = {"class": [], "event": [], "item": [], "mob": [], "sprite": []}
         self.check_dirs()
 
         self.cache = {}
@@ -25,7 +26,11 @@ class Data(object):
             # If saves directory doesn't exist assume there are no saves and just make a directory
             mkdir(self.saves_dir)
         # There should be more assumptions made of both asset dir and save dir if they exist.
-
+        
+        # Build an index
+        for key in self.index:
+            path = pjoin(self.asset_dir, key)
+            self.index[key] = ['.'.join(i.split('.')[:-1]) for i in listdir(path)]
 
     def get(self, asset_id):
         if asset_id not in self.cache:
@@ -35,7 +40,10 @@ class Data(object):
 
     def load(self, asset_id):
         asset_type, asset_name = asset_id.split('.')
+        if asset_name not in self.index[asset_type]:
+            raise AssetNotFoundException(asset_id)
 
+        path = pjoin(self.asset_dir, asset_type, asset_name)
         asset = None
         if asset_type == "class":
             pass
@@ -45,12 +53,11 @@ class Data(object):
             pass        
         elif asset_type == "item":
             pass
+        elif asset_type == "sprite":
+            pass
         else:
             raise InvalidAssetTypeException(asset_id)
         
-        if asset == None:
-            raise AssetNotFoundException(asset_id)
-
         self.cache[asset_id] = asset
 
     def save(self, world):
