@@ -21,3 +21,7 @@ COMMAND_HELP_DATA = {
     "load": "Takes world name as argument. Example usage: 'load middle-earth'.",
     "prompt": "Repeat the latest prompt.",
 }
+
+QUEST_PROMPT = "Do you want to go get the MacGuffin?"
+QUEST_ACCEPT = "Yay questing. You are now traveling."
+QUEST_DECLINE = "Too bad. You are now traveling."

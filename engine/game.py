@@ -74,13 +74,15 @@ class Game(object):
             else:
                 return (stub[cmd[0]], None)
 
-    def set_context(self, context=None):
+    def set_context(self, context=None, **data):
         if context == GAME_STATE.CAMP:
             pass
         elif context == GAME_STATE.COMBAT:
             pass
         elif context == GAME_STATE.TRAVEL:
-            pass
+            self.contextual = {}
+        elif context == GAME_STATE.YN_PROMPT:
+            self.contextual = {"yes": data["yes"], "no": data["no"]}
         else:
             assert context==None, "Unaccounted GAME_STATE: '{}'".format(context)
             # context == None
@@ -122,11 +124,28 @@ class Game(object):
             return self.world.prompt
         return "Game not loaded."
 
+    def accept_quest(self, yes):
+        def stump():
+            self.set_context(GAME_STATE.TRAVEL, destination="Brine")
+
+        if yes:
+            def f():
+                stump()
+                return QUEST_ACCEPT
+        else:
+            def f():
+                stump()
+                return QUEST_DECLINE
+        return f
+
     # Contextual
     def new(self):
         print("Name of new world:")
         name = input(">").strip() 
         self.world = World(name)
+        self.set_context(GAME_STATE.YN_PROMPT, yes=self.accept_quest(True), no=self.accept_quest(False))
+        self.world.prompt = QUEST_PROMPT
+        return self.world.prompt
         # self.save()
 
     def get_world(self, name):

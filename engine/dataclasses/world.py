@@ -17,9 +17,9 @@ class World:
         self.locations["Brine"].population = 1
 
         # Travel stuff
-        self.party_location = "Kliron"
-        self.party_destination = None
-        self.party_progress = 0
+        self.travel_origin = "Kliron"
+        self.travel_destination = None
+        self.travel_progress = 0
 
         # Travel costs more one way because uphill.
         self.distances = {("Kliron", "Brine"): 4, ("Brine", "Kliron"): 2}
