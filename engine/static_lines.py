@@ -19,5 +19,5 @@ COMMAND_HELP_DATA = {
     "no": "Used by itself. Decline whatever is being prompted.",
     "new": "Used by itself. Create a new world. The world name will be prompted.",
     "load": "Takes world name as argument. Example usage: 'load middle-earth'.",
-    "setting": "Re-describe the current setting",
+    "prompt": "Repeat the latest prompt.",
 }

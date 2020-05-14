@@ -1,13 +1,5 @@
 from .location import Location
 
-from enum import Enum, auto
-
-class GAME_STATE(Enum):
-    TRAVEL = auto()
-    COMBAT = auto()
-    SOCIAL = auto()
-    CAMP = auto()
-
 class World:
     """
     The world is a graph with values for distances between nodes.
@@ -24,8 +16,6 @@ class World:
         self.locations["Brine"].population = 0.1
         self.locations["Brine"].population = 1
 
-        self.situation = GAME_STATE.SOCIAL
-
         # Travel stuff
         self.party_location = "Kliron"
         self.party_destination = None
@@ -34,5 +24,4 @@ class World:
         # Travel costs more one way because uphill.
         self.distances = {("Kliron", "Brine"): 4, ("Brine", "Kliron"): 2}
 
-        self.setting = "You find yourselves in a sprawling city."
-
+        self.prompt = "You find yourselves in a sprawling city. Would you like to go get the MacGuffin?"

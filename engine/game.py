@@ -1,9 +1,15 @@
 from .data import Data
 from .static_lines import *
 from .dataclasses import World
-from .dataclasses.world import GAME_STATE
 
 from threading import Thread
+from enum import Enum, auto
+
+class GAME_STATE(Enum):
+    TRAVEL = auto()
+    COMBAT = auto()
+    CAMP = auto()
+    YN_PROMPT = auto()
 
 ARGLESS = "__ARGLESS__"
 
@@ -14,7 +20,7 @@ class Game(object):
     def __init__(self, root_dir):
         self.data = Data(root_dir)
         self.world = None
-        self.evergreen = {"duck": self.duck, "help": self.show_help, "quit": self.quit, "setting": self.setting}
+        self.evergreen = {"duck": self.duck, "help": self.show_help, "quit": self.quit, "prompt": self.prompt}
         self.set_context()
 
         self.running = False
@@ -32,10 +38,10 @@ class Game(object):
         print(INTRO)
         print(self.show_help())
 
-        if self.data.get_saves():
-            print(WORLDS_HEADER)
-            for world in self.data.get_saves():
-                print(WORLD_LINE.format(world))
+        # if self.data.get_saves():
+        #     print(WORLDS_HEADER)
+        #     for world in self.data.get_saves():
+        #         print(WORLD_LINE.format(world))
 
         while self.running:
             cmd = input('> ').strip().split()
@@ -73,17 +79,16 @@ class Game(object):
             pass
         elif context == GAME_STATE.COMBAT:
             pass
-        elif context == GAME_STATE.SOCIAL:
-            pass
         elif context == GAME_STATE.TRAVEL:
             pass
         else:
             assert context==None, "Unaccounted GAME_STATE: '{}'".format(context)
             # context == None
             self.contextual = {"new": self.new}
-            if self.data.get_saves():
-                # Can only load if saves exist
-                self.contextual["load"] = {s: lambda : self.get_world(s) for s in self.data.get_saves()}
+            # if self.data.get_saves():
+            #     # Can only load if saves exist
+            #     self.contextual["load"] = {s: lambda : self.get_world(s) for s in self.data.get_saves()}
+            #     self.contextual["load"][ARGLESS] = self.get_world(self.data.get_saves()[0]) # TODO loads *some* save. debug faster with this.
 
     # Evergreen
     def duck(self):
@@ -112,19 +117,19 @@ class Game(object):
         self.data.save(self.world) 
         return "Game saved"
 
-    def setting(self):
+    def prompt(self):
         if self.world:
-            return self.world.setting
-        return "Game not loaded, setting only applicable after a world is loaded."
+            return self.world.prompt
+        return "Game not loaded."
 
     # Contextual
     def new(self):
         print("Name of new world:")
         name = input(">").strip() 
         self.world = World(name)
-        self.save()
+        # self.save()
 
     def get_world(self, name):
         self.world = self.data.load_save(name)
         self.set_context(self.world.situation)
-        return self.setting()
+        return self.prompt()
