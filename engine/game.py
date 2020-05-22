@@ -80,6 +80,7 @@ class Game(object):
         elif context == GAME_STATE.COMBAT:
             pass
         elif context == GAME_STATE.TRAVEL:
+            self.world.travel_destination = data["destination"]
             self.contextual = {}
         elif context == GAME_STATE.YN_PROMPT:
             self.contextual = {"yes": data["yes"], "no": data["no"]}
