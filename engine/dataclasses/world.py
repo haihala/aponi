@@ -1,4 +1,5 @@
 from .location import Location
+from .character import Character
 
 class World:
     """
@@ -25,3 +26,7 @@ class World:
         self.distances = {("Kliron", "Brine"): 4, ("Brine", "Kliron"): 2}
 
         self.prompt = "You find yourselves in a sprawling city. Would you like to go get the MacGuffin?"
+        self.party = []
+
+    def advance_travel(self):
+        speed = min(i.travel_speed for i in party)

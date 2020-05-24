@@ -22,6 +22,7 @@ class Game(object):
     def __init__(self, root_dir):
         self.data = Data(root_dir)
         self.world = None
+        self.contextual = {}
         self.evergreen = {"duck": self.duck, "help": self.show_help, "quit": self.quit, "prompt": self.prompt}
         self.set_context()
 
@@ -83,13 +84,10 @@ class Game(object):
             pass
         elif context == GAME_STATE.TRAVEL:
             self.world.travel_destination = data["destination"]
-            self.contextual = {}
-            """
-            Go forwards
-            abilities of items
-            abilities of party
-            camp
-            """
+            self.contextual = {"go": self.world.advance_travel, "camp": lambda : self.set_context(GAME_STATE.CAMP)}
+            for member in self.world.party:
+                self.contextual.update(member.travel_verbs)
+
         elif context == GAME_STATE.YN_PROMPT:
             self.contextual = {"yes": data["yes"], "no": data["no"]}
         else:
