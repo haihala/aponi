@@ -1,9 +1,11 @@
 from .data import Data
 from .static_lines import *
 from .dataclasses import World
+from .exceptions import InputException, TopCommandException, SubCommandException, IncompleteCommandException, MissingGameStateException
 
 from threading import Thread
 from enum import Enum, auto
+from typing import Callable, Tuple, Dict, List
 
 class GAME_STATE(Enum):
     TRAVEL = auto()
@@ -26,13 +28,13 @@ class Game(object):
         self.running = False
 
     @property
-    def options(self):
+    def options(self) -> Dict[str, Callable]:
         ret = {}
         ret.update(self.evergreen)
         ret.update(self.contextual)
         return ret
 
-    def run(self):
+    def run(self) -> None:
         self.running = True
         # Repl
         print(INTRO)
@@ -45,36 +47,36 @@ class Game(object):
 
         while self.running:
             cmd = input('> ').strip().split()
-            func, error_message = self.find_function(cmd)
-            if error_message == None:
+            try:
+                func = self.find_function(cmd)
                 print(func())
-            else:
-                print(error_message)
+            except InputException as e:
+                print(e.message)
 
-    def find_function(self, cmd, stub=None, parent=None):
+    def find_function(self, cmd, stub=None, parent=None) -> Callable:
         if stub == None:
             stub = self.options
 
         if cmd[0] not in stub:
             if parent:
                 # Issue with subcommand
-                return (None, INVALID_SUB_COMMAND.format(parent, cmd[0]))
+                raise SubCommandException(parent, cmd[0])
             else:
                 # Issue with root command
-                return (None, INVALID_TOP_COMMAND.format(cmd[0]))
+                raise TopCommandException(cmd[0])
         else:
             if type(stub[cmd[0]]) is dict:
                 if len(cmd) > 1:
                     return self.find_function(cmd[1:], stub=stub[cmd[0]], parent=cmd[0])
                 else:
                     if ARGLESS in stub:
-                        return (stub[ARGLESS], None)
+                        return stub[ARGLESS]
                     else:
-                        return (None, INCOMPLETE_COMMAND.format(parent, ', '.join(["'{}'".format(i) for i in stub.keys()])))
+                        raise IncompleteCommandException(parent, ', '.join(["'{}'".format(i) for i in stub.keys()]))
             else:
-                return (stub[cmd[0]], None)
+                return stub[cmd[0]]
 
-    def set_context(self, context=None, **data):
+    def set_context(self, context=None, **data) -> None:
         if context == GAME_STATE.CAMP:
             pass
         elif context == GAME_STATE.COMBAT:
@@ -82,10 +84,17 @@ class Game(object):
         elif context == GAME_STATE.TRAVEL:
             self.world.travel_destination = data["destination"]
             self.contextual = {}
+            """
+            Go forwards
+            abilities of items
+            abilities of party
+            camp
+            """
         elif context == GAME_STATE.YN_PROMPT:
             self.contextual = {"yes": data["yes"], "no": data["no"]}
         else:
-            assert context==None, "Unaccounted GAME_STATE: '{}'".format(context)
+            if context==None:
+                raise MissingGameStateException(context)
             # context == None
             self.contextual = {"new": self.new}
             # if self.data.get_saves():

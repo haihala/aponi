@@ -1,11 +1,7 @@
 INTRO = "Hello. Welcome to Aponi tech demo #0. This is the help message:"
 
-WORLDS_HEADER = "The following saves found:"
-WORLD_LINE = "\t* {}"
-
-INVALID_TOP_COMMAND = "Command '{}' could not be found."
-INVALID_SUB_COMMAND = "Parent command '{}' has no child command '{}'."
-INCOMPLETE_COMMAND = "Command '{}' is missing something. Options: {}"
+# WORLDS_HEADER = "The following saves found:"
+# WORLD_LINE = "\t* {}"
 
 HELP_HEADER = "# Help\nThis is the help message. All shall be explained.\n"
 EVERGREEN_HELP_HEADER = "## Evergreen\nSome commands are evergreen and always usable. Here is a list of all of them and explanations on what they do.\n"
